@@ -14,17 +14,16 @@ import android.widget.TextView;
 public class TodoListManagerActivity extends Activity {
 
 	private ArrayAdapter<Item> adapter;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
-		
-		ListView listCourses = 
-        		(ListView)findViewById(R.id.lstTodoItems);
-        List<Item> items = new ArrayList<Item>();
+
+		ListView listCourses = (ListView) findViewById(R.id.lstTodoItems);
+		List<Item> items = new ArrayList<Item>();
 		adapter = new ItemDisplayAdapter(this, items);
-        listCourses.setAdapter(adapter);
+		listCourses.setAdapter(adapter);
 	}
 
 	@Override
@@ -39,7 +38,7 @@ public class TodoListManagerActivity extends Activity {
 		case R.id.menuItemAdd:
 			TextView edtNewItem = (TextView) findViewById(R.id.edtNewItem);
 			String title = edtNewItem.getText().toString();
-			Item item = new Item(title); 
+			Item item = new Item(title);
 			adapter.add(item);
 			break;
 		case R.id.menuItemDelete:
