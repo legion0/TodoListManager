@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Todo List Manager</string>
-    <string name="action_settings">Settings</string>
-    <string name="menu_button_add">Add</string>
-    <string name="menu_button_delete">Delete</string>
+	<string name="app_name">Todo List Manager</string>
+	<string name="action_settings">Settings</string>
+	<string name="menu_button_add">Add</string>
+	<string name="menu_button_delete">Delete</string>
 
 </resources>
