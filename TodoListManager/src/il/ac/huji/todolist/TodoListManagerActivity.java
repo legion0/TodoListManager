@@ -34,14 +34,20 @@ public class TodoListManagerActivity extends Activity {
 	}
 
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
+		Item item = null;
 		switch (menuItem.getItemId()) {
 		case R.id.menuItemAdd:
 			TextView edtNewItem = (TextView) findViewById(R.id.edtNewItem);
 			String title = edtNewItem.getText().toString();
-			Item item = new Item(title);
+			item = new Item(title);
 			adapter.add(item);
 			break;
 		case R.id.menuItemDelete:
+			ListView listCourses = (ListView) findViewById(R.id.lstTodoItems);
+			item = (Item) listCourses.getSelectedItem();
+			if (item != null) {
+				adapter.remove(item);
+			}
 			break;
 		}
 		return true;
