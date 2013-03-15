@@ -1,43 +1,40 @@
 package il.ac.huji.todolist;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.TextView;
 
 public class TodoListManagerActivity extends Activity {
 
+	private static final int REQC_ADDING_NEW_TODO_ITEM = 2;
 	private ArrayAdapter<Item> adapter;
 
-	private boolean addItem() {
-		return addItem((EditText) findViewById(R.id.edtNewItem));
-	}
-
-	private boolean addItem(EditText editText) {
-		if (editText == null) {
+	private boolean addItem(String title, Date dueDate) {
+		if (title == null) {
 			return false;
 		}
-		String title = editText.getText().toString();
-		hideKeyboard(editText.getWindowToken());
-		Item item = new Item(title);
+		Item item = new Item(title, dueDate);
 		adapter.add(item);
-		editText.setText("");
 		return true;
 	}
 
 	private void hideKeyboard() {
-		hideKeyboard(getCurrentFocus().getWindowToken());
+		View focus = getCurrentFocus();
+		if (focus != null) {
+			hideKeyboard(focus.getWindowToken());
+		}
 
 	}
 
@@ -54,20 +51,12 @@ public class TodoListManagerActivity extends Activity {
 		List<Item> items = new ArrayList<Item>();
 		adapter = new ItemDisplayAdapter(this, items);
 		listCourses.setAdapter(adapter);
-		EditText input = (EditText) findViewById(R.id.edtNewItem);
-		input.setOnEditorActionListener(new OnEditorActionDoneListener() {
-			@Override
-			public boolean onEditorDoneAction(TextView editText, int actionId, KeyEvent keyEvent) {
-				return addItem((EditText) editText);
-			}
-		});
-
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		getMenuInflater().inflate(R.menu.todo_list_manager, menu);
 		hideKeyboard();
+		getMenuInflater().inflate(R.menu.todo_list_manager, menu);
 		return true;
 	}
 
@@ -76,7 +65,7 @@ public class TodoListManagerActivity extends Activity {
 		Item item = null;
 		switch (menuItem.getItemId()) {
 		case R.id.menuItemAdd:
-			return addItem();
+			return openAddItemActivity();
 		case R.id.menuItemDelete:
 			ListView listCourses = (ListView) findViewById(R.id.lstTodoItems);
 			item = (Item) listCourses.getSelectedItem();
@@ -89,4 +78,21 @@ public class TodoListManagerActivity extends Activity {
 		return false;
 	}
 
+	private boolean openAddItemActivity() {
+		Intent intent = new Intent(this, AddNewTodoItemActivity.class);
+		startActivityForResult(intent, REQC_ADDING_NEW_TODO_ITEM);
+		return true;
+	}
+
+	@Override
+	protected void onActivityResult(int reqCode, int resCode, Intent data) {
+		switch (reqCode) {
+		case REQC_ADDING_NEW_TODO_ITEM:
+			if (resCode == RESULT_OK) {
+				String title = data.getStringExtra("title");
+				Date dueDate = (Date) data.getExtras().get("dueDate");
+				addItem(title, dueDate);
+			}
+		}
+	}
 }
