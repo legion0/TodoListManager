@@ -62,18 +62,9 @@ public class TodoListManagerActivity extends Activity {
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem menuItem) {
-		Item item = null;
 		switch (menuItem.getItemId()) {
 		case R.id.menuItemAdd:
 			return openAddItemActivity();
-		case R.id.menuItemDelete:
-			ListView listCourses = (ListView) findViewById(R.id.lstTodoItems);
-			item = (Item) listCourses.getSelectedItem();
-			if (item != null) {
-				adapter.remove(item);
-				return true;
-			}
-			break;
 		}
 		return false;
 	}

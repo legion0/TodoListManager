@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:id="@+id/LinearLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/relavtiveLayout1"
 	android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:orientation="horizontal" >
+	android:layout_height="match_parent" >
 
 	<TextView
 		android:id="@+id/txtTodoTitle"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_alignParentLeft="true"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:textIsSelectable="false" />
 
@@ -16,7 +16,8 @@
 		android:id="@+id/txtTodoDueDate"
 		android:layout_width="wrap_content"
 		android:layout_height="wrap_content"
+		android:layout_alignParentRight="true"
 		android:textAppearance="?android:attr/textAppearanceLarge"
 		android:textIsSelectable="false" />
 
-</LinearLayout>
+</RelativeLayout>

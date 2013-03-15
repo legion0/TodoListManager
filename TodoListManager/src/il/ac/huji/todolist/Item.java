@@ -1,7 +1,5 @@
 package il.ac.huji.todolist;
 
-import java.io.IOError;
-import java.io.IOException;
 import java.util.Date;
 
 public class Item {

@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.view.LayoutInflater;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 public class ItemDisplayAdapter extends ArrayAdapter<Item> {
 
+	@SuppressLint("SimpleDateFormat")
 	private DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
 	public ItemDisplayAdapter(TodoListManagerActivity activity, List<Item> items) {
@@ -32,7 +34,8 @@ public class ItemDisplayAdapter extends ArrayAdapter<Item> {
 		title.setText(item.title());
 		if (item.dueDate() != null) {
 			dueDate.setText(dateFormat.format(item.dueDate()));
-			if (item.dueDate().getTime() < new Date().getTime()) {
+			Date today = Functions.today();
+			if (item.dueDate().getTime() < today.getTime()) {
 				title.setTextColor(Color.RED);
 				dueDate.setTextColor(Color.RED);
 			}

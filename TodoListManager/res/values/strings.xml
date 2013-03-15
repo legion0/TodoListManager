@@ -9,5 +9,6 @@
 	<string name="title_activity_add_new_todo_item">Add New Item</string>
 	<string name="ok">OK</string>
 	<string name="cancel">Cancel</string>
+	<string name="hint_title">Title:</string>
 
 </resources>
