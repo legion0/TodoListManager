@@ -31,17 +31,17 @@ public class AddNewTodoItemActivity extends Activity {
 		public void onClick(View arg0) {
 			TextView titleView = (TextView) findViewById(R.id.edtNewItem);
 			DatePicker datePicker = (DatePicker) findViewById(R.id.datePicker);
-			
+
 			String title = titleView.getText().toString();
 			Calendar cal = Calendar.getInstance();
 			cal.clear();
 			cal.set(datePicker.getYear(), datePicker.getMonth(), datePicker.getDayOfMonth());
 			Date date = cal.getTime();
-			
-			Intent result = new Intent(); 
+
+			Intent result = new Intent();
 			result.putExtra("title", title);
 			result.putExtra("dueDate", date);
-			setResult(RESULT_OK, result); 
+			setResult(RESULT_OK, result);
 			finish();
 		}
 	};
@@ -50,8 +50,8 @@ public class AddNewTodoItemActivity extends Activity {
 
 		@Override
 		public void onClick(View arg0) {
-			Intent result = new Intent(); 
-			setResult(RESULT_CANCELED, result); 
+			Intent result = new Intent();
+			setResult(RESULT_CANCELED, result);
 			finish();
 		}
 	};
