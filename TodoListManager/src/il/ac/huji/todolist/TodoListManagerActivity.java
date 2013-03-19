@@ -99,6 +99,7 @@ public class TodoListManagerActivity extends Activity {
 		getMenuInflater().inflate(R.menu.todo_list_list_context, menu);
 		AdapterContextMenuInfo adapterInfo = (AdapterContextMenuInfo) info;
 		Item item = adapter.getItem(adapterInfo.position);
+		menu.setHeaderTitle(item.title());
 		Resources res = getResources();
 		String callPrefix = res.getString(R.string.prefix_call);
 		if (item.title().startsWith(callPrefix)) {
