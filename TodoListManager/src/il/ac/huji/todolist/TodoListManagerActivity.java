@@ -34,19 +34,6 @@ public class TodoListManagerActivity extends Activity {
 		return true;
 	}
 
-	private void hideKeyboard() {
-		View focus = getCurrentFocus();
-		if (focus != null) {
-			hideKeyboard(focus.getWindowToken());
-		}
-
-	}
-
-	private void hideKeyboard(IBinder iBinder) {
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(iBinder, 0);
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,7 +47,6 @@ public class TodoListManagerActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		hideKeyboard();
 		getMenuInflater().inflate(R.menu.todo_list_manager, menu);
 		return true;
 	}
