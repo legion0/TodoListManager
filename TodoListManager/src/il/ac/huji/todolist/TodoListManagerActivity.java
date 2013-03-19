@@ -5,19 +5,16 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -95,6 +92,7 @@ public class TodoListManagerActivity extends Activity {
 		}
 	}
 
+	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
 		getMenuInflater().inflate(R.menu.todo_list_list_context, menu);
 		AdapterContextMenuInfo adapterInfo = (AdapterContextMenuInfo) info;
@@ -110,6 +108,7 @@ public class TodoListManagerActivity extends Activity {
 		}
 	}
 
+	@Override
 	public boolean onContextItemSelected(MenuItem menuItem) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuItem.getMenuInfo();
 		Item item = adapter.getItem(info.position);
