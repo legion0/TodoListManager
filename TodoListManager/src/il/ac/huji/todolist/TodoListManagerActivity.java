@@ -4,18 +4,15 @@ import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -39,19 +36,6 @@ public class TodoListManagerActivity extends Activity {
 		return true;
 	}
 
-	private void hideKeyboard() {
-		View focus = getCurrentFocus();
-		if (focus != null) {
-			hideKeyboard(focus.getWindowToken());
-		}
-
-	}
-
-	private void hideKeyboard(IBinder iBinder) {
-		InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.hideSoftInputFromWindow(iBinder, 0);
-	}
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,7 +50,6 @@ public class TodoListManagerActivity extends Activity {
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		hideKeyboard();
 		getMenuInflater().inflate(R.menu.todo_list_manager, menu);
 		return true;
 	}
