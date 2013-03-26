@@ -4,8 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.parse.FindCallback;
+import com.parse.Parse;
+import com.parse.ParseACL;
+import com.parse.ParseException;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
@@ -15,6 +24,7 @@ public class TodoDAL {
 
 	public TodoDAL(Context context) {
 		dbHelper = new DBHelper(context);
+		initParse(context);
 	}
 
 	public boolean insert(ITodoItem todoItem) {
@@ -41,7 +51,22 @@ public class TodoDAL {
 			return false;
 		}
 		boolean res = (Boolean) resO;
+		if (res) {
+			parseAdd(todoItem);
+		}
 		return res;
+	}
+
+	private void parseAdd(ITodoItem todoItem) {
+		Long due = null;
+		if (todoItem.getDueDate() != null) {
+			due = todoItem.getDueDate().getTime();
+		}
+		ParseObject parseItem = new ParseObject("todo");
+		parseItem.put("title", todoItem.getTitle());
+		parseItem.put("due", due);
+		parseItem.setACL(new ParseACL(ParseUser.getCurrentUser()));
+		parseItem.saveInBackground();
 	}
 
 	public boolean update(final ITodoItem todoItem) {
@@ -67,7 +92,31 @@ public class TodoDAL {
 			return false;
 		}
 		boolean res = (Boolean) resO;
+		if (res) {
+			parseUpdate(todoItem);
+		}
 		return res;
+	}
+
+	private void parseUpdate(ITodoItem todoItem) {
+		Long dueT = null;
+		if (todoItem.getDueDate() != null) {
+			dueT = todoItem.getDueDate().getTime();
+		}
+		final Long due = dueT;
+		ParseQuery query = new ParseQuery("todo");
+		query.whereEqualTo("title", todoItem.getTitle());
+		query.findInBackground(new FindCallback() {
+			@Override
+			public void done(List<ParseObject> objects, ParseException e) {
+				if (e == null && objects.size() > 0) {
+					for (int i = 1; i < objects.size(); i++) {
+						objects.get(i).deleteInBackground();
+					}
+					objects.get(0).put("due", due);
+				}
+			}
+		});
 	}
 
 	public boolean delete(final ITodoItem todoItem) {
@@ -88,7 +137,25 @@ public class TodoDAL {
 			return false;
 		}
 		boolean res = (Boolean) resO;
+		if (res) {
+			parseDelete(todoItem);
+		}
 		return res;
+	}
+
+	private void parseDelete(ITodoItem todoItem) {
+		ParseQuery query = new ParseQuery("todo");
+		query.whereEqualTo("title", todoItem.getTitle());
+		query.findInBackground(new FindCallback() {
+			@Override
+			public void done(List<ParseObject> objects, ParseException e) {
+				if (e == null && objects.size() > 0) {
+					for (ParseObject o : objects) {
+						o.deleteInBackground();
+					}
+				}
+			}
+		});
 	}
 
 	public List<ITodoItem> all() {
@@ -135,5 +202,16 @@ public class TodoDAL {
 			db.endTransaction();
 		}
 		return res;
+	}
+
+	private void initParse(Context context) {
+		Resources resources = context.getResources();
+		String applicationId = resources.getString(R.string.parseApplication);
+		String clientKey = resources.getString(R.string.clientKey);
+		Parse.initialize(context, applicationId, clientKey);
+		ParseUser.enableAutomaticUser();
+		if (ParseUser.getCurrentUser() == null) {
+			ParseUser.getCurrentUser().saveInBackground();
+		}
 	}
 }
