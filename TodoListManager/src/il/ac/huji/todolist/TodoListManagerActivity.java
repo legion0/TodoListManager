@@ -1,20 +1,21 @@
 package il.ac.huji.todolist;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.IBinder;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -24,12 +25,16 @@ public class TodoListManagerActivity extends Activity {
 	private static final int REQC_ADDING_NEW_TODO_ITEM = 2;
 	private ArrayAdapter<ITodoItem> adapter;
 	private ListView listCourses;
+	private TodoDAL dal;
 
 	private boolean addItem(String title, Date dueDate) {
 		if (title == null) {
 			return false;
 		}
 		TodoItem item = new TodoItem(title, dueDate);
+		if (!dal.insert(item)) {
+			return false;
+		}
 		adapter.add(item);
 		return true;
 	}
@@ -52,7 +57,8 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
 		listCourses = (ListView) findViewById(R.id.lstTodoItems);
-		List<ITodoItem> items = new ArrayList<ITodoItem>();
+		dal = new TodoDAL(this);
+		List<ITodoItem> items = dal.all();
 		adapter = new ItemDisplayAdapter(this, items);
 		listCourses.setAdapter(adapter);
 		registerForContextMenu(listCourses);
@@ -125,7 +131,6 @@ public class TodoListManagerActivity extends Activity {
 		Resources res = getResources();
 		String callPrefix = res.getString(R.string.prefix_call);
 		String number = item.getTitle().substring(callPrefix.length());
-		Log.d("Calling", number);
 		Intent dial = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", number, null));
 		startActivity(dial);
 		return true;
@@ -133,6 +138,7 @@ public class TodoListManagerActivity extends Activity {
 
 	private boolean deleteItem(ITodoItem item) {
 		adapter.remove(item);
+		dal.delete(item);
 		return true;
 	}
 }
