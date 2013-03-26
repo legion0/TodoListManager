@@ -2,17 +2,17 @@ package il.ac.huji.todolist;
 
 import java.util.Date;
 
-public class Item {
+public class TodoItem implements ITodoItem {
 
 	private String title = null;
 	private Date dueDate = null;
 
-	public Item(String title, Date dueDate) {
+	public TodoItem(String title, Date dueDate) {
 		this.title = title;
 		this.dueDate = dueDate;
 	}
 
-	public String title() {
+	public String getTitle() {
 		return this.title;
 	}
 
@@ -20,7 +20,7 @@ public class Item {
 	// this.title = title;
 	// }
 
-	public Date dueDate() {
+	public Date getDueDate() {
 		return this.dueDate;
 	}
 

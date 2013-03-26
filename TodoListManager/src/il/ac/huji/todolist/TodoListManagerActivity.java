@@ -22,14 +22,14 @@ import android.widget.ListView;
 public class TodoListManagerActivity extends Activity {
 
 	private static final int REQC_ADDING_NEW_TODO_ITEM = 2;
-	private ArrayAdapter<Item> adapter;
+	private ArrayAdapter<ITodoItem> adapter;
 	private ListView listCourses;
 
 	private boolean addItem(String title, Date dueDate) {
 		if (title == null) {
 			return false;
 		}
-		Item item = new Item(title, dueDate);
+		TodoItem item = new TodoItem(title, dueDate);
 		adapter.add(item);
 		return true;
 	}
@@ -52,7 +52,7 @@ public class TodoListManagerActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_todo_list_manager);
 		listCourses = (ListView) findViewById(R.id.lstTodoItems);
-		List<Item> items = new ArrayList<Item>();
+		List<ITodoItem> items = new ArrayList<ITodoItem>();
 		adapter = new ItemDisplayAdapter(this, items);
 		listCourses.setAdapter(adapter);
 		registerForContextMenu(listCourses);
@@ -96,13 +96,13 @@ public class TodoListManagerActivity extends Activity {
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo info) {
 		getMenuInflater().inflate(R.menu.todo_list_list_context, menu);
 		AdapterContextMenuInfo adapterInfo = (AdapterContextMenuInfo) info;
-		Item item = adapter.getItem(adapterInfo.position);
-		menu.setHeaderTitle(item.title());
+		ITodoItem item = adapter.getItem(adapterInfo.position);
+		menu.setHeaderTitle(item.getTitle());
 		Resources res = getResources();
 		String callPrefix = res.getString(R.string.prefix_call);
-		if (item.title().startsWith(callPrefix)) {
+		if (item.getTitle().startsWith(callPrefix)) {
 			MenuItem callView = menu.findItem(R.id.menuItemCall);
-			callView.setTitle(item.title());
+			callView.setTitle(item.getTitle());
 		} else {
 			menu.removeItem(R.id.menuItemCall);
 		}
@@ -111,7 +111,7 @@ public class TodoListManagerActivity extends Activity {
 	@Override
 	public boolean onContextItemSelected(MenuItem menuItem) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuItem.getMenuInfo();
-		Item item = adapter.getItem(info.position);
+		ITodoItem item = adapter.getItem(info.position);
 		switch (menuItem.getItemId()) {
 		case R.id.menuItemDelete:
 			return deleteItem(item);
@@ -121,17 +121,17 @@ public class TodoListManagerActivity extends Activity {
 		return false;
 	}
 
-	private boolean callSomeone(Item item) {
+	private boolean callSomeone(ITodoItem item) {
 		Resources res = getResources();
 		String callPrefix = res.getString(R.string.prefix_call);
-		String number = item.title().substring(callPrefix.length());
+		String number = item.getTitle().substring(callPrefix.length());
 		Log.d("Calling", number);
 		Intent dial = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", number, null));
 		startActivity(dial);
 		return true;
 	}
 
-	private boolean deleteItem(Item item) {
+	private boolean deleteItem(ITodoItem item) {
 		adapter.remove(item);
 		return true;
 	}
