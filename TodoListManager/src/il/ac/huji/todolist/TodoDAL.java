@@ -21,6 +21,7 @@ import android.database.sqlite.SQLiteDatabase;
 public class TodoDAL {
 	private final DBHelper dbHelper;
 	private static final String TABLE_NAME = "todo";
+	private static final Long DB_NULL_DATE = 0L;
 
 	public TodoDAL(Context context) {
 		dbHelper = new DBHelper(context);
@@ -33,7 +34,7 @@ public class TodoDAL {
 		}
 		final ContentValues values = new ContentValues(1);
 		values.put("title", todoItem.getTitle());
-		Long due = null;
+		Long due = DB_NULL_DATE;
 		if (todoItem.getDueDate() != null) {
 			due = todoItem.getDueDate().getTime();
 		}
@@ -58,7 +59,7 @@ public class TodoDAL {
 	}
 
 	private void parseAdd(ITodoItem todoItem) {
-		Long due = null;
+		Long due = DB_NULL_DATE;
 		if (todoItem.getDueDate() != null) {
 			due = todoItem.getDueDate().getTime();
 		}
@@ -74,7 +75,7 @@ public class TodoDAL {
 			return false;
 		}
 		final ContentValues values = new ContentValues(1);
-		Long due = null;
+		Long due = DB_NULL_DATE;
 		if (todoItem.getDueDate() != null) {
 			due = todoItem.getDueDate().getTime();
 		}
@@ -99,7 +100,7 @@ public class TodoDAL {
 	}
 
 	private void parseUpdate(ITodoItem todoItem) {
-		Long dueT = null;
+		Long dueT = DB_NULL_DATE;
 		if (todoItem.getDueDate() != null) {
 			dueT = todoItem.getDueDate().getTime();
 		}
@@ -170,7 +171,7 @@ public class TodoDAL {
 						String title = cursor.getString(0);
 						Long due = cursor.getLong(1);
 						Date dueDate = null;
-						if (due != null) {
+						if (due != DB_NULL_DATE) {
 							dueDate = new Date(due);
 						}
 						items.add(new TodoItem(title, dueDate));
