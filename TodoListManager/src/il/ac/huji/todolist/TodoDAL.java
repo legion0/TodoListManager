@@ -211,8 +211,5 @@ public class TodoDAL {
 		String clientKey = resources.getString(R.string.clientKey);
 		Parse.initialize(context, applicationId, clientKey);
 		ParseUser.enableAutomaticUser();
-		if (ParseUser.getCurrentUser() == null) {
-			ParseUser.getCurrentUser().saveInBackground();
-		}
 	}
 }
