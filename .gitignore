@@ -1,5 +1,9 @@
-.project
-.classpath
-.settings
-bin
-gen
+/*/.project
+/*/.classpath
+/*/.settings/
+/*/bin/
+/*/gen/
+# dont need these in a school project
+/.gitconfigs/
+/presubmit/
+
