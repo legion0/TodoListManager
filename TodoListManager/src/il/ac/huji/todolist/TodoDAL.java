@@ -17,11 +17,11 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 public class TodoDAL {
 	private final DBHelper dbHelper;
 	private static final String TABLE_NAME = "todo";
-	private static final Long DB_NULL_DATE = 0L;
 
 	public TodoDAL(Context context) {
 		dbHelper = new DBHelper(context);
@@ -34,11 +34,11 @@ public class TodoDAL {
 		}
 		final ContentValues values = new ContentValues(1);
 		values.put("title", todoItem.getTitle());
-		Long due = DB_NULL_DATE;
 		if (todoItem.getDueDate() != null) {
-			due = todoItem.getDueDate().getTime();
+			values.put("due", todoItem.getDueDate().getTime());
+		} else {
+			values.putNull("due");
 		}
-		values.put("due", due);
 		Object resO = doDBAction(new IDBAction() {
 
 			@Override
@@ -59,13 +59,11 @@ public class TodoDAL {
 	}
 
 	private void parseAdd(ITodoItem todoItem) {
-		Long due = DB_NULL_DATE;
-		if (todoItem.getDueDate() != null) {
-			due = todoItem.getDueDate().getTime();
-		}
 		ParseObject parseItem = new ParseObject("todo");
+		if (todoItem.getDueDate() != null) {
+			parseItem.put("due", todoItem.getDueDate().getTime());
+		}
 		parseItem.put("title", todoItem.getTitle());
-		parseItem.put("due", due);
 		parseItem.setACL(new ParseACL(ParseUser.getCurrentUser()));
 		parseItem.saveInBackground();
 	}
@@ -75,11 +73,11 @@ public class TodoDAL {
 			return false;
 		}
 		final ContentValues values = new ContentValues(1);
-		Long due = DB_NULL_DATE;
 		if (todoItem.getDueDate() != null) {
-			due = todoItem.getDueDate().getTime();
+			values.put("due", todoItem.getDueDate().getTime());
+		} else {
+			values.putNull("due");
 		}
-		values.put("due", due);
 		Object resO = doDBAction(new IDBAction() {
 
 			@Override
@@ -100,7 +98,7 @@ public class TodoDAL {
 	}
 
 	private void parseUpdate(ITodoItem todoItem) {
-		Long dueT = DB_NULL_DATE;
+		Long dueT = null;
 		if (todoItem.getDueDate() != null) {
 			dueT = todoItem.getDueDate().getTime();
 		}
@@ -111,10 +109,14 @@ public class TodoDAL {
 			@Override
 			public void done(List<ParseObject> objects, ParseException e) {
 				if (e == null && objects.size() > 0) {
-					for (int i = 1; i < objects.size(); i++) {
-						objects.get(i).deleteInBackground();
+					for (int i = 0; i < objects.size(); i++) {
+						if (due != null) {
+							objects.get(i).put("due", due);
+						} else {
+							objects.get(i).remove("due");
+						}
+						objects.get(i).saveInBackground();
 					}
-					objects.get(0).put("due", due);
 				}
 			}
 		});
@@ -169,10 +171,9 @@ public class TodoDAL {
 				if (cursor.moveToFirst()) {
 					do {
 						String title = cursor.getString(0);
-						Long due = cursor.getLong(1);
 						Date dueDate = null;
-						if (due != DB_NULL_DATE) {
-							dueDate = new Date(due);
+						if (!cursor.isNull(1)) {
+							dueDate = new Date(cursor.getLong(1));
 						}
 						items.add(new TodoItem(title, dueDate));
 					} while (cursor.moveToNext());
